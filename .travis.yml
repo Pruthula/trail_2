@@ -8,4 +8,5 @@ script:
 notifications:
   email:
     - pruthula@gmail.com
+    - rangasaiy33@gmail.com
   on_success: always
