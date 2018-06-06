@@ -4,6 +4,7 @@ jdk:
 - oraclejdk8
 script:
 - ./run.sh
+- ./gradlew cobertura coveralls
 notifications:
   email:
     - pruthula@gmail.com
