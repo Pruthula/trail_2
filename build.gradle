@@ -7,7 +7,6 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath 'net.saliman:gradle-cobertura-plugin:2.0.0'
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0'
 	}
 }
@@ -16,7 +15,6 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'cobertura'
 apply plugin: 'com.github.kt3k.coveralls'
 
 group = 'com.example'
@@ -27,10 +25,47 @@ repositories {
 	mavenCentral()
 }
 
+jacoco{
+      toolVersion = "0.7.9"
+}
+
+jacocoTestReport{
+    reports{
+        xml.enabled true
+        csv.enabled true
+        html.enabled true
+        html.destination "$buildDir/reports/jacoco/html"
+    }
+}
+
+jacocoTestCoverageVerification {
+    //executionData = files('build/jacoco/test.exec', 'build/jacoco/intTest.exec')
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.40
+            }
+        }
+    }
+}
+
+task 'jacocoMerged', type: JacocoMerge, {
+    executionData tasks.test
+    //executionData tasks.intTest
+}
+
+task 'jacocoMergedReport', type: JacocoReport, {
+    sourceSets project.sourceSets.main
+    executionData tasks.jacocoMerged.executionData
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "$buildDir/reports/jacoco/html"
+    }
+}
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
-cobertura.coverageFormats = ['html', 'xml']
