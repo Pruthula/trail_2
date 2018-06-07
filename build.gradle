@@ -26,19 +26,17 @@ repositories {
 	mavenCentral()
 }
 
-jacoco {
-    toolVersion = "0.8.1"
-}
-
-jacocoTestReport {
+jacocoTestReport{
+    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
     reports {
         xml.enabled true
-        csv.enabled true
-        html.enabled true 
+        csv.enabled false
+		html.enabled true
     }
+    executionData = files('build/jacoco/test.exec')
 }
 
-
+test { finalizedBy jacocoTestReport }
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
